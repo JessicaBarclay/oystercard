@@ -1,10 +1,10 @@
 
 class Oystercard
 
-MAX_LIMIT = 90
-FARE = 1
+  BALANCE = 90
+  FARE = 1
 
-attr_reader :balance, :entry_station, :exit_station, :journeys
+  attr_reader :balance, :entry_station, :exit_station, :journeys
 
   def initialize
     @balance = 0
@@ -14,19 +14,14 @@ attr_reader :balance, :entry_station, :exit_station, :journeys
   end
 
   def top_up(amount)
-    fail "The balance exceeds the #{Oystercard::MAX_LIMIT} limit" if @balance+amount > MAX_LIMIT
+    fail "Error: balance exceeds #{BALANCE}" if @balance + amount > BALANCE
     @balance += amount
   end
 
   def touch_in(station)
-    fail 'Insufficient funds' if @balance < FARE
+    fail "Error: Insufficient funds" if @balance < FARE
     @entry_station << station
   end
-
-  def in_journey?
-    !!entry_station
-  end
-
 
   def touch_out(station)
     deduct
@@ -34,13 +29,14 @@ attr_reader :balance, :entry_station, :exit_station, :journeys
     @journeys = Hash[@entry_station.zip @exit_station]
   end
 
-
+  def in_journey?
+    !!entry_station
+  end
 
   private
 
   def deduct
     @balance -= FARE
   end
-
 
 end
