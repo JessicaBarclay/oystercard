@@ -9,10 +9,11 @@ class Oystercard
 
   def initialize
     @balance = 0
+    @journey = Journey.new
   end
 
   def top_up(amount)
-    fail "Error: Balance exceeds #{BALANCE_LIMIT}" if @balance + amount > BALANCE_LIMIT
+    fail "Error: Balance exceeds #{ BALANCE_LIMIT }" if @balance + amount > BALANCE_LIMIT
     @balance += amount
   end
 
@@ -28,6 +29,8 @@ class Oystercard
   end
 
   private
+
+  attr_writer :journey
 
   def deduct
     @balance -= FARE

@@ -1,7 +1,6 @@
 require 'oystercard'
 
 describe Oystercard do
-  subject { Oystercard.new }
   alias_method :oystercard, :subject
   let(:balance_limit) { Oystercard::BALANCE_LIMIT }
   let(:fare) { Oystercard::FARE }
@@ -14,23 +13,31 @@ describe Oystercard do
     expect(oystercard.balance).to eq 0
   end
 
-  # describe '#touch_out' do
-  #   it 'deducts fare when card touches out' do
-  #     expect { oystercard.touch_out(station) }.to change { oystercard.balance }.by(-fare)
-  #   end
-  # end
+  context 'balance set to maximum and touch in' do
+    before { oystercard.top_up(balance_limit) }
+    before { oystercard.touch_in(station) }
 
-  describe '#top_up' do
-    it 'tops up a card' do
-      expect { oystercard.top_up(1) }.to change { oystercard.balance }.by 1
-    end
-    it 'raises exception when balance_limit exceeds limit' do
-      expect { oystercard.top_up(balance_limit + 1) }.to raise_error "Error: Balance exceeds #{balance_limit}"
+    describe '#touch_out' do
+      it 'deducts fare when card touches out' do
+        expect { oystercard.touch_out(station) }.to change { oystercard.balance }.by(-fare)
+      end
+      # it 'records @journey' do
+      #  expect(oystercard.touch_out(station)).to eq journey
+      # end
     end
   end
 
-  context 'it does not require a #top_up to @balance' do
+  describe '#top_up' do
+    it 'tops up a card' do
+      expect { oystercard.top_up(balance_limit) }.to change { oystercard.balance }.by balance_limit
+    end
 
+    it 'raises exception when balance_limit exceeds limit' do
+      expect { oystercard.top_up(balance_limit + 1) }.to raise_error "Error: Balance exceeds #{ balance_limit }"
+    end
+  end
+
+  context '@balance = 0' do
     describe '#touch_in' do
       it 'throws and error if balance <= 0 at touch in' do
         expect { oystercard.touch_in(station) }.to raise_error "Error: Insufficient funds"

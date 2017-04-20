@@ -1,8 +1,7 @@
-require './lib/oystercard'
-
 class Journey
 
   PENALTY_FARE = 6
+  FARE = 1
 
   attr_reader :entry_station, :exit_station, :journeys
 
@@ -14,6 +13,10 @@ class Journey
 
   def finish
     @journeys = Hash[ @entry_station.zip(@exit_station) ]
+  end
+
+  def fare(amount = PENALTY_FARE)
+    amount
   end
 
   private
